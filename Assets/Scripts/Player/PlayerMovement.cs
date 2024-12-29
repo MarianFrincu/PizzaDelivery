@@ -116,7 +116,6 @@ public class PlayerMovement : MonoBehaviour
         {
             _currentSpeed = 0;
             _rb.linearVelocity = Vector3.zero;
-            Debug.Log("Hit: " + collision.gameObject.name);
         }
     }
 }
