@@ -105,7 +105,6 @@ public class ObjectiveRelocator : MonoBehaviour
     public void MoveToNextPosition()
     {
         transform.position = positions[0];
-        Debug.Log($"x:{transform.position.x} z:{transform.position.z}");
         positions.RemoveAt(0);
     }
 }

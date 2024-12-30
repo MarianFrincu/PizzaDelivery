@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private float _MaxSpeed = 20f;
+    [SerializeField] private float _MaxSpeed = 30f;
     [SerializeField] private float _ReverseSpeed = 5f;
-    [SerializeField] private float _Acceleration = 5f;
-    [SerializeField] private float _Deceleration = 8f;
-    [SerializeField] private float _RotationSpeed = 100f;
+    [SerializeField] private float _Acceleration = 8f;
+    [SerializeField] private float _Deceleration = 10f;
+    [SerializeField] private float _RotationSpeed = 180f;
     [SerializeField] private Transform _SteeringHelper;
     [SerializeField] private float _MinYPosition = 0f;
 
@@ -60,7 +60,6 @@ public class PlayerMovement : MonoBehaviour
 
         _rb.MovePosition(_rb.position + forwardMovement);
 
-        // Rotim motocicleta
         if (Input.GetKey(KeyCode.LeftArrow))
             RotateVehicle(-1);
         else if (Input.GetKey(KeyCode.RightArrow))
