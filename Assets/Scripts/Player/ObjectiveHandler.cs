@@ -3,6 +3,7 @@ using UnityEngine;
 public class ObjectiveHandler : MonoBehaviour
 {
     private int _score;
+    [SerializeField] private CollisionHandler collisionHandler;
 
     void Start()
     {
@@ -11,7 +12,11 @@ public class ObjectiveHandler : MonoBehaviour
 
     void Update()
     {
-        
+        if (collisionHandler.IsCompletelyDamaged())
+        {
+            Debug.Log("Comanda este complet distrusă și nu poate fi livrată!");
+            // Adaugă logica pentru anularea livrării
+        }
     }
 
     private void OnTriggerEnter(Collider other)
