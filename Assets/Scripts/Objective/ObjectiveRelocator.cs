@@ -8,6 +8,8 @@ public class ObjectiveRelocator : MonoBehaviour
 
     void Start()
     {
+      
+
         positions = new List<Vector3>
         {
             new Vector3(24, 0, -12),

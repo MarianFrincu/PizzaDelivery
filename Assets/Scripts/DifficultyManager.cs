@@ -4,12 +4,12 @@ public class DifficultyManager : MonoBehaviour
 {
     public enum Difficulty { Easy, Medium, Hard }
 
-    public Difficulty currentDifficulty = Difficulty.Medium;
+    public Difficulty SelectedDifficulty = Difficulty.Medium; // Dificultatea selectată
     public float baseDeliveryTime = 60f; // Timp de livrare de bază
 
     public float GetDeliveryTime()
     {
-        switch (currentDifficulty)
+        switch (SelectedDifficulty)
         {
             case Difficulty.Easy:
                 return baseDeliveryTime; // 100% timp
@@ -21,4 +21,5 @@ public class DifficultyManager : MonoBehaviour
                 return baseDeliveryTime;
         }
     }
+
 }
