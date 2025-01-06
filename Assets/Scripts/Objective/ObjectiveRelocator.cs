@@ -6,11 +6,24 @@ public class ObjectiveRelocator : MonoBehaviour
 {
     private List<Vector3> positions;
 
+    public float deliveryTime;
+
     void Start()
     {
-      
 
-        positions = new List<Vector3>
+        DifficultyManager manager = FindObjectOfType<DifficultyManager>();
+        if (manager != null)
+        {
+            deliveryTime = manager.GetDeliveryTime();
+            Debug.Log("Delivery time set to: " + deliveryTime);
+        }
+        else
+        {
+            Debug.LogError("DifficultyManager not found in GameScene!");
+        }
+   
+
+    positions = new List<Vector3>
         {
             new Vector3(24, 0, -12),
             new Vector3(46, 0, -33),
@@ -97,6 +110,7 @@ public class ObjectiveRelocator : MonoBehaviour
         positions.Add(new Vector3(115.16f, 35.81f, 289.72f));
 
         MoveToNextPosition();
+
     }
 
     void ShufflePositions()
