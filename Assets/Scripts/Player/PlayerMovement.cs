@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -14,11 +14,18 @@ public class PlayerMovement : MonoBehaviour
     private float _currentSpeed = 0f;
     private bool _isReversing = false;
 
+    [SerializeField] private CollisionHandler collisionHandler; // Referință la CollisionHandler
+
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
         _rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         _rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+
+        if (collisionHandler == null)
+        {
+            collisionHandler = GetComponent<CollisionHandler>(); // Găsim componenta CollisionHandler
+        }
     }
 
     private void FixedUpdate()
@@ -113,8 +120,9 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Obstacle"))
         {
-            _currentSpeed = 0;
-            _rb.linearVelocity = Vector3.zero;
+            collisionHandler.ApplyDamage(_rb); // Apelăm funcția din CollisionHandler
+            _currentSpeed = 0; // Resetăm viteza
+            _rb.linearVelocity = Vector3.zero; // Resetăm mișcarea
         }
     }
 }
