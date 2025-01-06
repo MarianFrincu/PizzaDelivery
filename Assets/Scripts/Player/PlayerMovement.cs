@@ -14,18 +14,14 @@ public class PlayerMovement : MonoBehaviour
     private float _currentSpeed = 0f;
     private bool _isReversing = false;
 
-    [SerializeField] private CollisionHandler collisionHandler; // Referință la CollisionHandler
+    private PlayerStats _stats;
 
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
+        _stats = GetComponent<PlayerStats>();
         _rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         _rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
-
-        if (collisionHandler == null)
-        {
-            collisionHandler = GetComponent<CollisionHandler>(); // Găsim componenta CollisionHandler
-        }
     }
 
     private void FixedUpdate()
@@ -120,9 +116,25 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Obstacle"))
         {
-            collisionHandler.ApplyDamage(_rb); // Apelăm funcția din CollisionHandler
-            _currentSpeed = 0; // Resetăm viteza
-            _rb.linearVelocity = Vector3.zero; // Resetăm mișcarea
+            ApplyDamage();
+
+            _rb.MovePosition(_rb.position - transform.forward * 0.07f);
+
+            _currentSpeed = 0;
+            _rb.linearVelocity = Vector3.zero;
         }
+    }
+
+    private void ApplyDamage()
+    {
+        int damage = Mathf.RoundToInt(Mathf.Abs(_currentSpeed) * _stats.DamageMultiplier);
+        _stats.UpdateHealth(damage);
+
+        if (_stats.GetCurrentHealth() == 0)
+        {
+            FindAnyObjectByType<ObjectiveRelocator>().NextDelivery();
+            _stats.ResetHealth();
+        }
+
     }
 }

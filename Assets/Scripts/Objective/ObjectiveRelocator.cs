@@ -1,22 +1,22 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 public class ObjectiveRelocator : MonoBehaviour
 {
     private List<Vector3> positions;
-    public float deliveryTime; // Timpul livrării
-    private float delayTime; // Timpul de întârziere (10% din deliveryTime)
+    private int deliveryTime = 0;
+    private int _remainingTime = 0;
+
+    private PlayerStats _stats;
 
     void Start()
     {
-        DifficultyManager manager = FindObjectOfType<DifficultyManager>();
+        DifficultyManager manager = FindAnyObjectByType<DifficultyManager>();
         if (manager != null)
         {
             deliveryTime = manager.GetDeliveryTime();
-            delayTime = deliveryTime * 0.1f; // Calculăm întârzierea
-            Debug.Log($"Delivery time set to: {deliveryTime}, Delay time set to: {delayTime}");
+            Debug.Log($"Delivery time: {deliveryTime}");
         }
         else
         {
@@ -104,11 +104,12 @@ public class ObjectiveRelocator : MonoBehaviour
 
 
         ShufflePositions();
-        positions = positions.Take(75).ToList();
+        positions = positions.Take(10).ToList();
         positions.Add(new Vector3(115.16f, 35.81f, 289.72f));
 
-        // Pornim prima mutare
-        StartCoroutine(StartDeliveryTimer());
+        _stats = FindAnyObjectByType<PlayerStats>();
+
+        InvokeRepeating("UpdateTime", 0f, 1f);
     }
 
     void ShufflePositions()
@@ -116,32 +117,43 @@ public class ObjectiveRelocator : MonoBehaviour
         positions = positions.OrderBy(pos => Random.value).ToList();
     }
 
-    public void MoveToNextPosition()
+    private void MoveToNextPosition()
     {
-        if (positions.Count > 0)
+        if (AreUndeliveredPizzas())
         {
             transform.position = positions[0];
             positions.RemoveAt(0);
-            Debug.Log("Moved to next position: " + transform.position);
-
-            // Pornim din nou timer-ul
-            StartCoroutine(StartDeliveryTimer());
         }
         else
         {
             Debug.Log("No more positions left!");
+            CancelInvoke("UpdateTimer");
+            _stats.UpdateRemainingTime(0);
         }
     }
 
-    private IEnumerator StartDeliveryTimer()
+    private void UpdateTime()
     {
-        Debug.Log("Starting delivery timer...");
-        yield return new WaitForSeconds(deliveryTime);
-
-        Debug.Log("Delivery timer completed. Starting delay timer...");
-        yield return new WaitForSeconds(delayTime);
-
-        Debug.Log("Delay timer completed. Moving to next position...");
+        _stats.UpdateRemainingTime(_remainingTime);
+        if (_remainingTime == 0)
+        {
+            NextDelivery();
+        }
+        _remainingTime--;
+    }
+    public void NextDelivery()
+    {
+        _remainingTime = deliveryTime;
         MoveToNextPosition();
+    }
+
+    public float GetRemainingTime()
+    {
+        return _remainingTime;
+    }
+
+    public bool AreUndeliveredPizzas()
+    {
+        return positions.Count > 0;
     }
 }

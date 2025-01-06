@@ -3,16 +3,17 @@ using TMPro;
 
 public class PlayerStats : MonoBehaviour
 {
-    private const float _maxHealth = 100;
+    private const int _maxHealth = 100;
+    
+    private const float _damageMultiplier = 1f;
+    public float DamageMultiplier { get => _damageMultiplier; }
 
     private float _currentScore;
-    private float _currentHealth;
+    private int _currentHealth;
     private float _deliveredPizzas;
+    private float _remainingTime;
 
     [SerializeField] private TMP_Text statsText;
-
-    // variabila pt label
-    // tot asa pt orice iti trebe pe UI
 
     void Start()
     {
@@ -26,7 +27,8 @@ public class PlayerStats : MonoBehaviour
     {
         if (statsText != null)
         {
-            statsText.text = $"<b>Score:</b> {_currentScore}\n<b>Health:</b> {_currentHealth}\n<b>Delivered Pizzas:</b> {_deliveredPizzas}";
+            string seconds = _remainingTime < 10 ? $"0{_remainingTime}" : _remainingTime.ToString();
+            statsText.text = $"<b>Score:</b> {_currentScore}\n<b>Health:</b> {_currentHealth}\n<b>Delivered Pizzas:</b> {_deliveredPizzas}\n<b>Remaining Time:</b> {seconds}";
         }
         else
         {
@@ -55,9 +57,9 @@ public class PlayerStats : MonoBehaviour
         return _currentHealth;
     }
 
-    public void UpdateHealth(float damage)
+    public void UpdateHealth(int damage)
     {
-        _currentHealth -= damage;
+        _currentHealth = Mathf.Clamp(_currentHealth - damage, 0, _maxHealth);
         UpdateStatsUI();
     }
 
@@ -75,6 +77,16 @@ public class PlayerStats : MonoBehaviour
     public void AddOneDeliveredPizza()
     {
         _deliveredPizzas += 1;
+        UpdateStatsUI();
+    }
+    public float GetRemainingTime()
+    {
+        return _remainingTime;
+    }
+
+    public void UpdateRemainingTime(int remainingTime)
+    {
+        _remainingTime = remainingTime;
         UpdateStatsUI();
     }
 }

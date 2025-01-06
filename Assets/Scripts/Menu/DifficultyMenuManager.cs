@@ -25,6 +25,6 @@ public class DifficultyMenuManager : MonoBehaviour
 
     private void LoadGameScene()
     {
-        SceneManager.LoadScene("GameScene"); // Înlocuiește "GameScene" cu numele exact al scenei tale
+        SceneManager.LoadScene("GameScene");
     }
 }

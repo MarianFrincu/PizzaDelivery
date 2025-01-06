@@ -35,7 +35,6 @@ public class HighScoreManager : MonoBehaviour
         easyHighScore = PlayerPrefs.GetInt("EasyHighScore", 0);  
         mediumHighScore = PlayerPrefs.GetInt("MediumHighScore", 0);
         hardHighScore = PlayerPrefs.GetInt("HardHighScore", 0);
-        Debug.Log($"High Scores Loaded: Easy: {easyHighScore}, Medium: {mediumHighScore}, Hard: {hardHighScore}");
     }
 
 

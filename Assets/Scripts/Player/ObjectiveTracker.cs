@@ -2,28 +2,18 @@
 
 public class ObjectiveTracker : MonoBehaviour
 {
-    [SerializeField] private Transform player;
-    [SerializeField] private Transform objective;
-    [SerializeField] private float rotationSpeed = 5f;
-    [SerializeField] private DifficultyManager difficultyManager;
-
-    private float deliveryTime;
+    [SerializeField] private Transform _Player;
+    [SerializeField] private Transform _Objective;
+    [SerializeField] private float _RotationSpeed = 5f;
 
     void Update()
     {
-
-        Vector3 directionToTarget = objective.position - player.position;
+        Vector3 directionToTarget = _Objective.position - _Player.position;
         directionToTarget.y = 0;
         directionToTarget.Normalize();
 
         Quaternion worldTargetRotation = Quaternion.LookRotation(directionToTarget);
-        transform.rotation = Quaternion.Slerp(transform.rotation, worldTargetRotation, Time.deltaTime * rotationSpeed);
-    }
-
-    void Start()
-    {
-        deliveryTime = difficultyManager.GetDeliveryTime();
-        Debug.Log($"Timp de livrare: {deliveryTime} secunde.");
+        transform.rotation = Quaternion.Slerp(transform.rotation, worldTargetRotation, Time.deltaTime * _RotationSpeed);
     }
 
 }
