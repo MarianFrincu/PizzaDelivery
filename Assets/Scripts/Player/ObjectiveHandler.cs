@@ -31,4 +31,17 @@ public class ObjectiveHandler : MonoBehaviour
             Debug.Log(_score);
         }
     }
+
+    private void EndGame()
+    {
+        DifficultyManager difficultyManager = FindObjectOfType<DifficultyManager>();
+        if (difficultyManager != null)
+        {
+            HighScoreManager highScoreManager = FindObjectOfType<HighScoreManager>();
+            if (highScoreManager != null)
+            {
+                highScoreManager.UpdateHighScore(difficultyManager.SelectedDifficulty, _score);
+            }
+        }
+    }
 }

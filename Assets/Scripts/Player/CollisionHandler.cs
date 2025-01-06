@@ -2,39 +2,36 @@ using UnityEngine;
 
 public class CollisionHandler : MonoBehaviour
 {
-    public float maxDamage = 100f; // Avariile maxime
-    public float damageMultiplier = 10f; // Factorul de multiplicare
-    private float currentDamage = 0f; // Avariile curente
+    public float maxHealth = 100f; // Sănătatea maximă
+    public float damageMultiplier = 10f; // Factorul de multiplicare pentru avarii
+    public float currentHealth; // Sănătatea curentă
 
-    private Rigidbody rb;
-
-    void Start()
+    private void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        currentHealth = maxHealth; // Inițializează sănătatea la valoarea maximă
     }
 
-    [System.Obsolete]
-    void OnCollisionEnter(Collision collision)
+    // Funcție pentru a aplica daune pe baza vitezei impactului
+    public void ApplyDamage(Rigidbody rb)
     {
-        // Calculează avariile în funcție de viteza impactului
-        float impactSpeed = rb.velocity.magnitude;
+        float impactSpeed = rb.linearVelocity.magnitude; // Calculăm viteza impactului
         float damage = impactSpeed * damageMultiplier;
 
-        currentDamage += damage;
-        currentDamage = Mathf.Clamp(currentDamage, 0, maxDamage);
+        currentHealth -= damage;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // Asigurăm limitele sănătății
 
-        Debug.Log($"Current Damage: {currentDamage}");
+        Debug.Log($"Health after collision: {currentHealth}");
 
-        // Dacă avariile ating limita maximă, marchează comanda ca avariată complet
-        if (currentDamage >= maxDamage)
+        // Verificăm dacă vehiculul este complet avariat
+        if (IsCompletelyDamaged())
         {
             Debug.Log("Vehiculul este complet avariat!");
         }
     }
 
-    // Funcție care verifică dacă avariile au atins limita maximă
+    // Funcție care verifică dacă sănătatea a ajuns la 0
     public bool IsCompletelyDamaged()
     {
-        return currentDamage >= maxDamage;
+        return currentHealth <= 0;
     }
 }

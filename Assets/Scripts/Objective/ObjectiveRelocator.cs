@@ -1,29 +1,29 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 public class ObjectiveRelocator : MonoBehaviour
 {
     private List<Vector3> positions;
-
-    public float deliveryTime;
+    public float deliveryTime; // Timpul livrării
+    private float delayTime; // Timpul de întârziere (10% din deliveryTime)
 
     void Start()
     {
-
         DifficultyManager manager = FindObjectOfType<DifficultyManager>();
         if (manager != null)
         {
             deliveryTime = manager.GetDeliveryTime();
-            Debug.Log("Delivery time set to: " + deliveryTime);
+            delayTime = deliveryTime * 0.1f; // Calculăm întârzierea
+            Debug.Log($"Delivery time set to: {deliveryTime}, Delay time set to: {delayTime}");
         }
         else
         {
             Debug.LogError("DifficultyManager not found in GameScene!");
         }
-   
 
-    positions = new List<Vector3>
+        positions = new List<Vector3>
         {
             new Vector3(24, 0, -12),
             new Vector3(46, 0, -33),
@@ -104,13 +104,11 @@ public class ObjectiveRelocator : MonoBehaviour
 
 
         ShufflePositions();
-
         positions = positions.Take(75).ToList();
-
         positions.Add(new Vector3(115.16f, 35.81f, 289.72f));
 
-        MoveToNextPosition();
-
+        // Pornim prima mutare
+        StartCoroutine(StartDeliveryTimer());
     }
 
     void ShufflePositions()
@@ -120,7 +118,30 @@ public class ObjectiveRelocator : MonoBehaviour
 
     public void MoveToNextPosition()
     {
-        transform.position = positions[0];
-        positions.RemoveAt(0);
+        if (positions.Count > 0)
+        {
+            transform.position = positions[0];
+            positions.RemoveAt(0);
+            Debug.Log("Moved to next position: " + transform.position);
+
+            // Pornim din nou timer-ul
+            StartCoroutine(StartDeliveryTimer());
+        }
+        else
+        {
+            Debug.Log("No more positions left!");
+        }
+    }
+
+    private IEnumerator StartDeliveryTimer()
+    {
+        Debug.Log("Starting delivery timer...");
+        yield return new WaitForSeconds(deliveryTime);
+
+        Debug.Log("Delivery timer completed. Starting delay timer...");
+        yield return new WaitForSeconds(delayTime);
+
+        Debug.Log("Delay timer completed. Moving to next position...");
+        MoveToNextPosition();
     }
 }
