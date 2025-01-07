@@ -5,64 +5,61 @@ public class SoundManager : MonoBehaviour
     [Header("Audio Sources")]
     public AudioSource driveAudioSource;
     public AudioSource collisionAudioSource;
-    public AudioSource taskCompleteAudioSource;
 
     [Header("Audio Clips")]
     public AudioClip driveSound;
     public AudioClip collisionSound;
-    public AudioClip taskCompleteSound;
+
+    [Header("Vehicle Settings")]
+    public Rigidbody vehicleRigidbody;
 
     private bool isDriving = false;
 
     void Start()
     {
-        PlayDriveSound();
-    }
-
-    void Update()
-    {
-        if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow))
-        {
-            if (!isDriving)
-            {
-                PlayDriveSound();
-                isDriving = true;
-            }
-        }
-        else
-        {
-            if (isDriving)
-            {
-                StopDriveSound();
-                isDriving = false;
-            }
-        }
-    }
-
-    /*private void PlayObjectiveSound()
-    {
-        if (startAudioSource && startSound)
-        {
-            startAudioSource.clip = startSound;
-            startAudioSource.Play();
-        }
-    }*/
-
-    private void PlayDriveSound()
-    {
         if (driveAudioSource && driveSound)
         {
             driveAudioSource.clip = driveSound;
             driveAudioSource.loop = true;
+            driveAudioSource.volume = 0.1f;
+            driveAudioSource.pitch = 1.0f;
             driveAudioSource.Play();
         }
     }
 
-    private void StopDriveSound()
+    void Update()
     {
-        if (driveAudioSource)
+        HandleDriveSound();
+    }
+
+    private void HandleDriveSound()
+    {
+        if (vehicleRigidbody)
         {
-            driveAudioSource.Stop();
+            float speed = vehicleRigidbody.linearVelocity.magnitude;
+            bool isInputPressed = Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0;
+
+            if (speed > 0.1f || isInputPressed)
+            {
+                if (!isDriving)
+                {
+                    isDriving = true;
+                }
+
+                float targetVolume = Mathf.Clamp(speed / 10f, 0.1f, 1f);
+                float targetPitch = Mathf.Clamp(speed / 10f + 1, 1f, 2f);
+
+                driveAudioSource.volume = Mathf.Lerp(driveAudioSource.volume, targetVolume, Time.deltaTime * 2);
+                driveAudioSource.pitch = Mathf.Lerp(driveAudioSource.pitch, targetPitch, Time.deltaTime * 2);
+            }
+            else
+            {
+                if (isDriving)
+                {
+                    isDriving = false;
+                }
+                driveAudioSource.volume = Mathf.Lerp(driveAudioSource.volume, 0, Time.deltaTime * 2);
+            }
         }
     }
 
@@ -74,15 +71,6 @@ public class SoundManager : MonoBehaviour
             {
                 collisionAudioSource.clip = collisionSound;
                 collisionAudioSource.Play();
-            }
-        }
-        if (collision.gameObject.CompareTag("Objective"))
-        {
-            if (taskCompleteAudioSource && taskCompleteSound)
-            {
-                taskCompleteAudioSource.clip = taskCompleteSound;
-                taskCompleteAudioSource.Play();
-                Debug.Log("Obiectiv atins! Sunetul de Task Complete a fost redat.");
             }
         }
     }
