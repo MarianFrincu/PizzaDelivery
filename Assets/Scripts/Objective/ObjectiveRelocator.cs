@@ -29,7 +29,7 @@ public class ObjectiveRelocator : MonoBehaviour
             new Vector3(24, 0, -12),
             new Vector3(46, 0, -33),
             new Vector3(1.5f, 0, -70),
-            new Vector3(-2, 0, 96),
+            new Vector3(108, 0, -204),
             new Vector3(42, 0, -110),
             new Vector3(41, 0, -160),
             new Vector3(41, 0, -180),
@@ -103,8 +103,7 @@ public class ObjectiveRelocator : MonoBehaviour
             new Vector3(160, 0, 130)
         };
 
-
-        ShufflePositions();
+        ShufflePositionsWithMinDistance();
         _positions = _positions.Take(10).ToList();
 
         _stats = FindAnyObjectByType<PlayerStats>();
@@ -112,9 +111,51 @@ public class ObjectiveRelocator : MonoBehaviour
         InvokeRepeating("UpdateTime", 0f, 1f);
     }
 
-    void ShufflePositions()
+    private void ShufflePositionsWithMinDistance()
     {
         _positions = _positions.OrderBy(pos => Random.value).ToList();
+        
+        float minDistance = 150f;
+        
+        List<Vector3> shuffled = new List<Vector3>();
+
+        Vector3 current = _positions[0];
+        shuffled.Add(current);
+        _positions.Remove(current);
+
+        while (_positions.Count > 0)
+        {
+            List<Vector3> validPositions = FilterPositionsByMinDistance(current, minDistance);
+
+            if (validPositions.Count > 0)
+            {
+                current = validPositions[Random.Range(0, validPositions.Count)];
+            }
+            else
+            {
+                current = _positions[Random.Range(0, validPositions.Count)];
+            }
+
+            shuffled.Add(current);
+            _positions.Remove(current);
+        }
+
+        _positions = shuffled;
+    }
+
+    private List<Vector3> FilterPositionsByMinDistance(Vector3 current, float minDistance)
+    {
+        List<Vector3> validPositions = new List<Vector3>();
+
+        foreach (Vector3 position in _positions)
+        {
+            if (Vector3.Distance(current, position) >= minDistance)
+            {
+                validPositions.Add(position);
+            }
+        }
+
+        return validPositions;
     }
 
     private void MoveToNextPosition()
@@ -172,14 +213,8 @@ public class ObjectiveRelocator : MonoBehaviour
 
                 GameManager.Instance.SetStats(_stats.GetCurrentScore(), _stats.GetDeliveredPizzas());
 
-                StartCoroutine(WaitAndLoadScene(0.5f, "GameOverScene"));
+                SceneManager.LoadScene("GameOverScene");
             }
         }
-    }
-
-    private IEnumerator WaitAndLoadScene(float waitTime, string sceneName)
-    {
-        yield return new WaitForSeconds(waitTime);
-        SceneManager.LoadScene(sceneName);
     }
 }

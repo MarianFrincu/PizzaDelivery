@@ -9,6 +9,6 @@ public class GameOverUI : MonoBehaviour
     void Start()
     {
         scoreText.text = "Score: " + GameManager.Instance.CurrentScore;
-        deliveredPizzasText.text = "Deliveres Pizzas: " + GameManager.Instance.DeliveredPizzas + "/10";
+        deliveredPizzasText.text = "Delivered Pizzas: " + GameManager.Instance.DeliveredPizzas + "/10";
     }
 }

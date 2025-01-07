@@ -1,8 +1,4 @@
-using System.Collections;
-using Unity.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class ObjectiveHandler : MonoBehaviour
 {
@@ -14,7 +10,7 @@ public class ObjectiveHandler : MonoBehaviour
 
             PlayerStats stats = GetComponent<PlayerStats>();
 
-            float addedScore = Mathf.Clamp(relocator.GetRemainingTime() * 1.5f + stats.GetCurrentHealth() * 3f, 0, 50);
+            int addedScore = Mathf.RoundToInt(100 * ((Mathf.Exp(2 * stats.GetCurrentHealth() / PlayerStats._maxHealth) - 1) / (Mathf.Exp(2) - 1)));
 
             stats.UpdateScore(addedScore);
             stats.AddOneDeliveredPizza();

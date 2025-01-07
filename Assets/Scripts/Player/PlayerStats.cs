@@ -4,7 +4,7 @@ using TMPro;
 
 public class PlayerStats : MonoBehaviour
 {
-    private const int _maxHealth = 100;
+    public const int _maxHealth = 100;
 
     private float _currentScore;
     private int _currentHealth;

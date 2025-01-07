@@ -29,9 +29,9 @@ public class DifficultyManager : MonoBehaviour
             case Difficulty.Easy:
                 return baseDeliveryTime; // 100%
             case Difficulty.Medium:
-                return Mathf.RoundToInt(baseDeliveryTime * 0.8f); // 80%
+                return Mathf.RoundToInt(baseDeliveryTime * 0.75f); // 75%
             case Difficulty.Hard:
-                return Mathf.RoundToInt(baseDeliveryTime * 0.6f); // 60%
+                return Mathf.RoundToInt(baseDeliveryTime * 0.5f); // 50%
             default:
                 return baseDeliveryTime;
         }
