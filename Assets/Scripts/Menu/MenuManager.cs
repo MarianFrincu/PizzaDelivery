@@ -3,35 +3,30 @@ using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
-    public GameObject mainMenu; // Grupul care conține titlul și butoanele principale
-    public GameObject difficultyMenu; // Grupul care conține butoanele pentru dificultate
-    public GameObject highScorePanel;
+    [SerializeField] private GameObject _MainMenu;
+    [SerializeField] private GameObject _DifficultyMenu;
+    [SerializeField] private GameObject _HighScorePanel;
+
     public void ShowDifficultyMenu()
     {
-        // Ascunde meniul principal
-        mainMenu.SetActive(false);
-        // Afișează meniul de dificultate
-        difficultyMenu.SetActive(true);
+        _MainMenu.SetActive(false);
+        _DifficultyMenu.SetActive(true);
     }
     public void ShowHighScorePanel()
     {
-        // Ascunde meniul principal
-        mainMenu.SetActive(false);
-        // Afișează meniul de dificultate
-        highScorePanel.SetActive(true);
+        _MainMenu.SetActive(false);
+        _HighScorePanel.SetActive(true);
     }
     public void BackToMainMenu()
     {
-        // Afișează meniul principal
-        mainMenu.SetActive(true);
-        // Ascunde meniul de dificultate
-        difficultyMenu.SetActive(false);
+        _MainMenu.SetActive(true);
+        _DifficultyMenu.SetActive(false);
+        _HighScorePanel.SetActive(false);
     }
 
 
     public void GoToGameOver()
     {
-        // Încarcă scena GameOverScene
         SceneManager.LoadScene("GameOverScene");
     }
 

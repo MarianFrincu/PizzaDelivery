@@ -8,8 +8,7 @@ public class GameOverUI : MonoBehaviour
 
     void Start()
     {
-        // Obține scorul și numărul de pizza livrate din GameManager
-        scoreText.text = "Scor: " + GameManager.Instance.CurrentScore;
-        deliveredPizzasText.text = "Pizza livrate: " + GameManager.Instance.DeliveredPizzas + "/10";
+        scoreText.text = "Score: " + GameManager.Instance.CurrentScore;
+        deliveredPizzasText.text = "Deliveres Pizzas: " + GameManager.Instance.DeliveredPizzas + "/10";
     }
 }

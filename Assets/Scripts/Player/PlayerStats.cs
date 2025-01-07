@@ -6,9 +6,6 @@ public class PlayerStats : MonoBehaviour
 {
     private const int _maxHealth = 100;
 
-    private const float _damageMultiplier = 1f;
-    public float DamageMultiplier { get => _damageMultiplier; }
-
     private float _currentScore;
     private int _currentHealth;
     private float _deliveredPizzas;
@@ -35,15 +32,6 @@ public class PlayerStats : MonoBehaviour
         {
             Debug.LogWarning("statsText nu este asignat în Inspector!");
         }
-    }
-
-    public void EndGame()
-    {
-        // Salvează scorul și numărul de pizza livrate în GameManager
-        GameManager.Instance.SetStats(_currentScore, _deliveredPizzas);
-
-        // Încarcă scena GameOverScene
-        SceneManager.LoadScene("GameOverScene");
     }
 
     public float GetCurrentScore()
@@ -83,12 +71,6 @@ public class PlayerStats : MonoBehaviour
     {
         _deliveredPizzas += 1;
         UpdateStatsUI();
-
-        // Dacă toate pizza sunt livrate, termină jocul
-        if (_deliveredPizzas >= 10)
-        {
-            EndGame();
-        }
     }
 
     public float GetRemainingTime()

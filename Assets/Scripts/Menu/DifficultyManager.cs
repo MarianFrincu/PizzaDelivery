@@ -4,16 +4,16 @@ public class DifficultyManager : MonoBehaviour
 {
     public enum Difficulty { Easy, Medium, Hard }
 
-    public Difficulty SelectedDifficulty = Difficulty.Medium;
+    public Difficulty SelectedDifficulty;
     public int baseDeliveryTime = 60;
 
-    private static DifficultyManager instance;
+    public static DifficultyManager Instance;
 
     private void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
         else
@@ -24,7 +24,7 @@ public class DifficultyManager : MonoBehaviour
 
     public int GetDeliveryTime()
     {
-        switch (SelectedDifficulty)
+        switch (Instance.SelectedDifficulty)
         {
             case Difficulty.Easy:
                 return baseDeliveryTime; // 100%

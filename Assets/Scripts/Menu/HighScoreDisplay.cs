@@ -19,7 +19,7 @@ public class HighScoreDisplay : MonoBehaviour
         }
         else
         {
-            Debug.LogError("HighScoreManager nu a fost găsit!");
+            Debug.LogError("HighScoreManager cannot be found!");
         }
     }
 

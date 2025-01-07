@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class ObjectiveRelocator : MonoBehaviour
 {
-    private List<Vector3> positions;
-    private int deliveryTime = 0;
+    private List<Vector3> _positions;
+    private int _deliveryTime = 0;
     private int _remainingTime = 0;
 
     private PlayerStats _stats;
@@ -15,15 +17,14 @@ public class ObjectiveRelocator : MonoBehaviour
         DifficultyManager manager = FindAnyObjectByType<DifficultyManager>();
         if (manager != null)
         {
-            deliveryTime = manager.GetDeliveryTime();
-            Debug.Log($"Delivery time: {deliveryTime}");
+            _deliveryTime = manager.GetDeliveryTime();
         }
         else
         {
             Debug.LogError("DifficultyManager not found in GameScene!");
         }
 
-        positions = new List<Vector3>
+        _positions = new List<Vector3>
         {
             new Vector3(24, 0, -12),
             new Vector3(46, 0, -33),
@@ -104,8 +105,7 @@ public class ObjectiveRelocator : MonoBehaviour
 
 
         ShufflePositions();
-        positions = positions.Take(10).ToList();
-        positions.Add(new Vector3(115.16f, 35.81f, 289.72f));
+        _positions = _positions.Take(10).ToList();
 
         _stats = FindAnyObjectByType<PlayerStats>();
 
@@ -114,36 +114,39 @@ public class ObjectiveRelocator : MonoBehaviour
 
     void ShufflePositions()
     {
-        positions = positions.OrderBy(pos => Random.value).ToList();
+        _positions = _positions.OrderBy(pos => Random.value).ToList();
     }
 
     private void MoveToNextPosition()
     {
         if (AreUndeliveredPizzas())
         {
-            transform.position = positions[0];
-            positions.RemoveAt(0);
+            transform.position = _positions[0];
+            _positions.RemoveAt(0);
         }
         else
         {
-            Debug.Log("No more positions left!");
+            transform.position = new Vector3(115.16f, 35.81f, 289.72f);
             CancelInvoke("UpdateTimer");
             _stats.UpdateRemainingTime(0);
+            EndGame();
         }
     }
 
     private void UpdateTime()
     {
-        _stats.UpdateRemainingTime(_remainingTime);
         if (_remainingTime == 0)
         {
             NextDelivery();
         }
+
+        _stats.UpdateRemainingTime(_remainingTime);
         _remainingTime--;
     }
     public void NextDelivery()
     {
-        _remainingTime = deliveryTime;
+        _remainingTime = _deliveryTime;
+        _stats.ResetHealth();
         MoveToNextPosition();
     }
 
@@ -154,6 +157,29 @@ public class ObjectiveRelocator : MonoBehaviour
 
     public bool AreUndeliveredPizzas()
     {
-        return positions.Count > 0;
+        return _positions.Count > 0;
+    }
+
+    private void EndGame()
+    {
+        DifficultyManager difficultyManager = FindAnyObjectByType<DifficultyManager>();
+        if (difficultyManager != null)
+        {
+            HighScoreManager highScoreManager = FindAnyObjectByType<HighScoreManager>();
+            if (highScoreManager != null)
+            {
+                highScoreManager.UpdateHighScore(difficultyManager.SelectedDifficulty, Mathf.RoundToInt(_stats.GetCurrentScore()));
+
+                GameManager.Instance.SetStats(_stats.GetCurrentScore(), _stats.GetDeliveredPizzas());
+
+                StartCoroutine(WaitAndLoadScene(0.5f, "GameOverScene"));
+            }
+        }
+    }
+
+    private IEnumerator WaitAndLoadScene(float waitTime, string sceneName)
+    {
+        yield return new WaitForSeconds(waitTime);
+        SceneManager.LoadScene(sceneName);
     }
 }

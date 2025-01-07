@@ -127,13 +127,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void ApplyDamage()
     {
-        int damage = Mathf.RoundToInt(Mathf.Abs(_currentSpeed) * _stats.DamageMultiplier);
+        int damage = Mathf.RoundToInt(Mathf.Abs(_currentSpeed));
         _stats.UpdateHealth(damage);
 
         if (_stats.GetCurrentHealth() == 0)
         {
             FindAnyObjectByType<ObjectiveRelocator>().NextDelivery();
-            _stats.ResetHealth();
         }
 
     }

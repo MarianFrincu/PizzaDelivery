@@ -3,23 +3,22 @@ using UnityEngine.SceneManagement;
 
 public class DifficultyMenuManager : MonoBehaviour
 {
-    public DifficultyManager difficultyManager;
 
     public void SetEasyDifficulty()
     {
-        difficultyManager.SelectedDifficulty = DifficultyManager.Difficulty.Easy;
+        DifficultyManager.Instance.SelectedDifficulty = DifficultyManager.Difficulty.Easy;
         LoadGameScene();
     }
 
     public void SetMediumDifficulty()
     {
-        difficultyManager.SelectedDifficulty = DifficultyManager.Difficulty.Medium;
+        DifficultyManager.Instance.SelectedDifficulty = DifficultyManager.Difficulty.Medium;
         LoadGameScene();
     }
 
     public void SetHardDifficulty()
     {
-        difficultyManager.SelectedDifficulty = DifficultyManager.Difficulty.Hard;
+        DifficultyManager.Instance.SelectedDifficulty = DifficultyManager.Difficulty.Hard;
         LoadGameScene();
     }
 

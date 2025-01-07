@@ -9,19 +9,17 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        // Asigură-te că există un singur GameManager și nu este distrus între scene
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // Nu distruge GameManager între scene
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Destroy(gameObject); // Distruge instanțele duplicate
+            Destroy(gameObject);
         }
     }
 
-    // Metodă pentru a seta scorul și numărul de pizza livrate
     public void SetStats(float score, float pizzas)
     {
         CurrentScore = score;
