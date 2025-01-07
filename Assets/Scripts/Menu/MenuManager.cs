@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
@@ -26,4 +27,13 @@ public class MenuManager : MonoBehaviour
         // Ascunde meniul de dificultate
         difficultyMenu.SetActive(false);
     }
+
+
+    public void GoToGameOver()
+    {
+        // Încarcă scena GameOverScene
+        SceneManager.LoadScene("GameOverScene");
+    }
+
 }
+
