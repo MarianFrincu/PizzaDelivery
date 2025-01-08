@@ -24,6 +24,11 @@ public class MenuManager : MonoBehaviour
         _HighScorePanel.SetActive(false);
     }
 
+    public void BackToMainMenuFromGame()
+    {
+        SceneManager.LoadScene("Menu");
+    }
+
 
     public void GoToGameOver()
     {

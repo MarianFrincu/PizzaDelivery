@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Audio;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -16,16 +17,41 @@ public class PlayerMovement : MonoBehaviour
 
     private PlayerStats _stats;
 
+    [SerializeField] private ParticleSystem explosionEffect;
+    [SerializeField] private AudioClip explosionSound;
+    private AudioSource _audioSource;
+
+    private Vector3 _initialPosition;
+    private Quaternion _initialRotation;
+
+    private Vector3 _initialCameraPosition;
+    private Quaternion _initialCameraRotation;
+
+    private bool isInputEnabled = true;
+
+    private Camera _camera;
+
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
         _stats = GetComponent<PlayerStats>();
+        _camera = GetComponentInChildren<Camera>();
+        _audioSource = GetComponent<AudioSource>();
+
+        _initialPosition = transform.position;
+        _initialRotation = transform.rotation;
+        _initialCameraPosition = _camera.transform.localPosition;
+        _initialCameraRotation = _camera.transform.localRotation;
+
         _rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         _rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
     }
 
     private void FixedUpdate()
     {
+        if (!isInputEnabled)
+            return;
+
         Move();
         RotateHandlebars();
         PreventOutOfMap();
@@ -33,6 +59,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move()
     {
+
         float forwardInput = 0f;
 
         if (Input.GetKey(KeyCode.UpArrow))
@@ -133,8 +160,45 @@ public class PlayerMovement : MonoBehaviour
 
         if (_stats.GetCurrentHealth() == 0)
         {
-            FindAnyObjectByType<ObjectiveRelocator>().NextDelivery();
+            HandleDeath();
         }
 
     }
+
+    private void HandleDeath()
+    {
+        TriggerExplosion();
+        transform.position += new Vector3(0, -10, 0);
+        _camera.transform.localPosition = new Vector3(0, 12, -4);
+        _camera.transform.localRotation = Quaternion.Euler(45, 0, 0);
+        _rb.useGravity = false;
+        FindAnyObjectByType<ObjectiveRelocator>().ReverseTimer(3);
+        isInputEnabled = false;
+        Invoke("ResetPos", 2f);
+    }
+
+    private void ResetPos()
+    {
+        transform.position = _initialPosition;
+        transform.rotation = _initialRotation;
+        _camera.transform.localPosition = _initialCameraPosition;
+        _camera.transform.localRotation = _initialCameraRotation;
+        isInputEnabled = true;
+        _rb.useGravity = true;
+        FindAnyObjectByType<ObjectiveRelocator>().NextDelivery();
+    }
+
+    public void TriggerExplosion()
+    {
+        if (explosionEffect != null)
+        {
+            Instantiate(explosionEffect, transform.position, transform.rotation);
+        }
+
+        if (_audioSource != null && explosionSound != null)
+        {
+            _audioSource.PlayOneShot(explosionSound);
+        }
+    }
+    
 }

@@ -12,16 +12,12 @@ public class PlayerStats : MonoBehaviour
     private float _remainingTime;
 
     [SerializeField] private TMP_Text statsText;
-    [SerializeField] private ParticleSystem explosionEffect;
-    [SerializeField] private AudioClip explosionSound;
-    private AudioSource audioSource;
 
     void Start()
     {
         _currentScore = 0;
         _currentHealth = _maxHealth;
         _deliveredPizzas = 0;
-        audioSource = GetComponent<AudioSource>();
         UpdateStatsUI();
     }
 
@@ -58,11 +54,6 @@ public class PlayerStats : MonoBehaviour
     {
         _currentHealth = Mathf.Clamp(_currentHealth - damage, 0, _maxHealth);
         UpdateStatsUI();
-
-        if (_currentHealth <= 0)
-        {
-            TriggerExplosionAndRestart();
-        }
     }
 
     public void ResetHealth()
@@ -91,48 +82,5 @@ public class PlayerStats : MonoBehaviour
     {
         _remainingTime = remainingTime;
         UpdateStatsUI();
-    }
-
-    private void TriggerExplosionAndRestart()
-    {
-        if (explosionEffect != null)
-        {
-            Instantiate(explosionEffect, transform.position, transform.rotation);
-        }
-
-        if (audioSource != null && explosionSound != null)
-        {
-            audioSource.PlayOneShot(explosionSound);
-        }
-
-        Camera mainCamera = GetComponentInChildren<Camera>();
-        if (mainCamera != null)
-        {
-            Vector3 newCameraPosition = mainCamera.transform.position - mainCamera.transform.forward * 10;
-            mainCamera.transform.position = newCameraPosition;
-        }
-
-        foreach (var renderer in GetComponentsInChildren<Renderer>())
-        {
-            renderer.enabled = false;
-        }
-
-        foreach (var collider in GetComponentsInChildren<Collider>())
-        {
-            collider.enabled = false;
-        }
-
-        var rb = GetComponent<Rigidbody>();
-        if (rb != null)
-        {
-            rb.isKinematic = true;
-        }
-
-        Invoke(nameof(RestartGame), 2f);
-    }
-
-    private void RestartGame()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

@@ -191,6 +191,11 @@ public class ObjectiveRelocator : MonoBehaviour
         MoveToNextPosition();
     }
 
+    public void ReverseTimer(int seconds)
+    {
+        _remainingTime += seconds;
+    }
+
     public float GetRemainingTime()
     {
         return _remainingTime;
