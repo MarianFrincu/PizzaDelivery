@@ -29,7 +29,7 @@ public class ObjectiveRelocator : MonoBehaviour
             new Vector3(24, 0, -12),
             new Vector3(46, 0, -33),
             new Vector3(1.5f, 0, -70),
-            new Vector3(108, 0, -204),
+            new Vector3(185, 0, -204),
             new Vector3(42, 0, -110),
             new Vector3(41, 0, -160),
             new Vector3(41, 0, -180),
