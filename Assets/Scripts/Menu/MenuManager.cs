@@ -7,6 +7,14 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject _DifficultyMenu;
     [SerializeField] private GameObject _HighScorePanel;
 
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+    }
+
     public void ShowDifficultyMenu()
     {
         _MainMenu.SetActive(false);
